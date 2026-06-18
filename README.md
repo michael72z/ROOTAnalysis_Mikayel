@@ -10,6 +10,11 @@ This macro serves as a foundational study of ROOT's 1D Floating-Point Histogram 
 * **Automated Coordinate Mapping:** Demonstrates how `hist->Fill()` maps a dynamic value to its designated bin coordinate without manual index calculations.
 * **Boundary Inspection:** Utilizes `GetBinLowEdge(bin)` and `GetBinUpEdge(bin)` to print the explicit mathematical boundaries of individual bins.
 
+### Graphical Result
+Below is the generated canvas rendering the distribution using the `"HIST"` draw configuration.
+
+![Student Marks Distribution Canvas](student_marks11.png)
+
 ### Execution
 Run the macro inside the ROOT environment:
 ```bash
@@ -22,3 +27,5 @@ Bin 2 (5 - 10) 54 students
 Bin 3 (10 - 15) 57 students
 Bin 4 (15 - 20) 34 students
 root [1]
+
+
