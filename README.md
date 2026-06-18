@@ -13,7 +13,9 @@ This macro serves as a foundational study of ROOT's 1D Floating-Point Histogram 
 ### Graphical Result
 Below is the generated canvas rendering the distribution using the `"HIST"` draw configuration.
 
-![Student Marks Distribution Canvas](student_marks11.png)
+![Student Marks Distribution Canvas]
+<img width="567" height="369" alt="student_marks11" src="https://github.com/user-attachments/assets/a82678c6-641f-4871-888b-b9a07af2777d" />
+
 
 ### Execution
 Run the macro inside the ROOT environment:
