@@ -49,3 +49,4 @@ Run the macro inside the ROOT environment:
 root -l myfirst.C
 ```
 
+### Graphical Result<img width="798" height="575" alt="student_test_scores1" src="https://github.com/user-attachments/assets/5be8ce43-2d44-4c6b-ae87-4f680b21d4ba" />
