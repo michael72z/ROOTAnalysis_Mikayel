@@ -29,5 +29,23 @@ Bin 2 (5 - 10) 54 students
 Bin 3 (10 - 15) 57 students
 Bin 4 (15 - 20) 34 students
 root [1]
+```
 
+---
+
+## Macro 2: `myfirst.C` - Static Dataset Processing and Visual Styling
+
+### Description
+This macro focuses on processing a pre-defined, fixed dataset (an array of 30 integer test scores) into a 10-bin histogram spanning a range from 0 to 100. It highlights ROOT's visualization attributes, demonstrating how to modify fill colors, line weights, and customize the canvas display components.
+
+### Technical Implementation
+* **Fixed Array Parsing:** Demonstrates programmatic population of a `TH1F` object from static local memory spaces rather than randomized or streamed data streams.
+* **Aesthetic Customization:** Utilizes `SetFillColor()` and `SetLineColor()` to manipulate the default frame layout into a high-contrast format.
+* **Statistical Overview:** Implements specific bitmask flags via `SetStats(1111)` to append an exhaustive metrics panel directly onto the canvas view.
+
+### Execution
+Run the macro inside the ROOT environment:
+```bash
+root -l myfirst.C
+```
 
