@@ -50,3 +50,27 @@ root -l myfirst.C
 ```
 
 ### Graphical Result<img width="798" height="575" alt="student_test_scores1" src="https://github.com/user-attachments/assets/5be8ce43-2d44-4c6b-ae87-4f680b21d4ba" />
+
+
+---
+
+## Macro 3: `studentmarks.cpp`
+
+### Description
+This script uses a fixed array of 30 student test scores to generate a styled histogram. Instead of opening an interactive canvas window that needs to be closed manually, this code automatically exports the final plot directly to a PNG file.
+
+### Key Features
+* Uses a standard array loop to populate the TH1F histogram.
+* Turns off the default statistics box for a cleaner visual layout.
+* Automatically saves the output canvas as an image file on disk.
+
+### Execution
+```bash
+root -l -q studentmarks.cpp
+```
+### Graphical Result
+<img width="798" height="575" alt="student_scores_histogram" src="https://github.com/user-attachments/assets/e9178563-7e09-4ca9-8fbe-c56481b430b9" />
+
+
+
+
