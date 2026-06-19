@@ -73,5 +73,24 @@ root -l -q studentmarks.cpp
 <img width="798" height="575" alt="student_scores_histogram" src="https://github.com/user-attachments/assets/e9178563-7e09-4ca9-8fbe-c56481b430b9" />
 
 
+---
+
+## Macro 4: `example.cpp`
+
+### Description
+This script generates a standard Gaussian distribution (bell curve) using ROOT's random number generator. It fills a 100-bin histogram with 10,000 random points and automatically saves the plot directly to a PNG file.
+
+### Key Features
+* Uses `gRandom->Gaus()` to sample data from a normal distribution.
+* Creates a histogram centered at 0 with a range from -4 to 4.
+* Saves the output canvas automatically without needing manual GUI interaction.
+
+### Execution
+```bash
+root -l -q example.cpp
+```
+### Graphical Result
+<img width="798" height="575" alt="histogram" src="https://github.com/user-attachments/assets/2850f1b1-e329-430f-90f4-330fb2a24dc9" />
+
 
 
