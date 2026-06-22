@@ -182,7 +182,7 @@ Event 9 | Q2: 2.9102 | xB: 0.0256269 | nu: 60.5156
 ---
 
 
-## Macro 7: sxal_analyze_hand.C - Kinematic Validation Anomaly Study
+## Macro 7: `sxal_analyze_hand.C` - Kinematic Validation Anomaly Study
 
 ### Description
 This macro serves as a diagnostic control case within the repository analysis pipeline. The script's intended objective is to perform an independent, first-principles cross-check of Deep Inelastic Scattering (DIS) invariants ($Q^2$ and $W^2$) without relying on high-level container classes like `TLorentzVector`. Instead, it uses purely scalar Cartesian momentum tracks and beam properties to reconstruct kinematics manually. 
@@ -223,4 +223,35 @@ The script performs manual geometric track reconstruction using the following ex
 Run the diagnostic script within your local environment directory using the standard log-quiet interface invocation:
 ```bash
 root -l sxal_analyze_hand.C
+
+root [0] 
+Processing sxal_analyze_hand.C...
+Processing events...
+Done! If histograms are centered at 0, your proof is correct.
+root [1]
 ```
+### Graphical Result
+<img width="798" height="375" alt="sxal_analiz" src="https://github.com/user-attachments/assets/48c4dbef-224f-4c64-b40f-89e0d9fb97a6" />
+
+### Failure Analysis & Error Breakdown
+The reason this file generates empty plots despite processing all 128,036 entries stems from a hidden **Uninitialized Leaf Memory / Branch Mismatch Alignment** that triggers an indeterminate mathematical state.
+
+* **Variable Isolation Default:** Because the script passes unaligned branch layouts into the tree parsing block, the core tracking leaves (`mu0_px`, `mu0_py`, `mu0_pz`) fail to read any data blocks from the raw file. The framework safely defaults these unmapped scalar parameters to exactly zero within the local stack memory allocation:
+  $$p_x = 0.0, \quad p_y = 0.0, \quad p_z = 0.0$$
+
+* **Indeterminate Angular Collapse:** When the loop executes the total track momentum calculation, it evaluates as:
+  $$p_{\text{total}} = \sqrt{0^2 + 0^2 + 0^2} = 0.0$$
+  When the script attempts to calculate the baseline scattering projection constant ($\cos\theta$), the equation encounters a severe division-by-zero ($0/0$) limitation:
+  $$\cos\theta = \frac{p_z}{p_{\text{total}}} \longrightarrow \frac{0.0}{0.0} \longrightarrow \text{NaN}$$
+
+* **Mathematical Cascade & Invalidation:** The floating-point system standard forces any algebraic interaction involving an undefined property to immediately evaluate as undefined. Consequently, the $\text{NaN}$ property cascades through the remaining kinematic steps:
+  $$Q^2_{\text{calc}} = 2 \cdot E_{\text{beam}} \cdot E' \cdot (1 - \text{NaN}) \longrightarrow \text{NaN}$$
+  $$\Delta Q^2 = \text{NaN} - Q^2_{\text{file}} \longrightarrow \text{NaN}$$
+
+* **ROOT Histogram Ingestion Rules:** When `ntuple->GetEntry(i)` loops, the code calls `hDiffQ2->Fill(NaN)`. ROOT's internal structural logic dictates that whenever `.Fill()` is called, the total event entry count variable (`Entries`) must increment by one. This is why the stats box displays a full database scan of 128,036.
+  
+  However, because $\text{NaN}$ has no logical spatial coordinate assignment along the real $X$-axis line, ROOT cannot locate a corresponding channel bin to increment. The value is discarded during the canvas rendering stage, leaving the coordinate grids completely empty while defaulting the statistical mean ($\mu$) and standard deviation ($\sigma$) readouts to zero.
+
+---
+
+
