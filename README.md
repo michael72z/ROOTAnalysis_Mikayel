@@ -93,71 +93,26 @@ root -l -q example.cpp
 <img width="798" height="575" alt="histogram" src="https://github.com/user-attachments/assets/2850f1b1-e329-430f-90f4-330fb2a24dc9" />
 
 
-## Macro 5: `TH1test.C` - 1D Histogram Binning and Manipulation
+## Macro 5: analysis.C - Kinematic Reconstruction and Data Pipeline Verification
 
-# Deep Inelastic Scattering (DIS) Kinematic Reconstruction
+### Description
+This macro executes a deterministic kinematic reconstruction of Deep Inelastic Scattering (DIS) events utilizing relativistic invariant equations. By streaming incoming and scattered lepton tracks from an experimental `TTree` dataset, the script programmatically evaluates core kinematic variables event-by-event. The script is structurally designed to print manual mathematical derivations side-by-side with pre-computed file branches to perform an automated data-integrity and tracking validation handshake.
 
-## Overview
-This repository contains an advanced high-energy physics analysis script (`analysis.C`) designed to reconstruct the kinematics of **Deep Inelastic Scattering (DIS)** events. 
+### Technical Implementation
+* **Data Pipeline Mapping:** Establishes an interface with the binary data storage file `myhist_298712.root` to target the core `ntuple` tree. It utilizes `SetBranchAddress()` to link underlying storage blocks directly to dynamic local allocations in memory.
+* **Lepton Four-Vector Parsing:** Extracts spatial momentum and total energy components for the initial incoming projectile array (`mu0_p[4]`) and the scattered outgoing array (`mu1_p[4]`), isolating index components where `[0, 1, 2]` represents $(p_x, p_y, p_z)$ and index `[3]` represents total scalar energy ($E$).
+* **Hadronic Energy Transfer ($\nu$):** Programmatically derives the total scalar energy loss of the lepton projectile in the laboratory frame via the relation:
+  $$\nu = E_0 - E_1$$
+* **Four-Momentum Transfer Squared ($Q^2$):** Computes photon virtuality—defining the structural resolution of the subatomic probe—by evaluating the relativistic invariant mass difference, factoring in a localized 3D spatial momentum dot product and a muon rest-mass correction ($m_\mu = 0.105\text{ GeV}$):
+  $$Q^2 = 2 \cdot (E_0 E_1 - (p_{x0}p_{x1} + p_{y0}p_{y1} + p_{z0}p_{z1}) - m_\mu^2)$$
+* **Bjorken Scaling Variable ($x_B$):** Evaluates the fractional momentum carried by the struck constituent quark relative to the target nucleon rest-mass constant ($M_p = 0.93827\text{ GeV}$):
+  $$x_B = \frac{Q^2}{2 M_p \nu}$$
+* **Inelasticity Metric ($y$):** Determines the relative fraction of total beam energy transferred from the initial projectile to the hadronic final state:
+  $$y = \frac{\nu}{E_0}$$
 
-The core objective of this macro is data verification and integrity validation. By processing raw particle track arrays, the script manually reconstructs fundamental Lorentz-invariant variables event-by-event and cross-checks them directly against pre-computed experimental data branches stored within a framework ROOT file.
-
----
-
-## Physics Context
-In a typical DIS event, a high-energy incoming lepton (in this case, a muon, $\mu$) collides with a stationary nucleon target (a proton, $p$). The interaction is mediated by the exchange of a virtual photon ($\gamma^*$), which probes the internal structure of the proton, scattering the lepton and breaking the nucleon apart into a hadronic final state.
-
-By measuring only the incoming and outgoing properties of the muon, we can completely map out the physics of the entire interaction.
-
----
-
-## Kinematic Variables & Mathematical Framework
-
-The script tracks and extracts two principal four-vectors for each event:
-* **Initial Lepton ($\mu_0$):** $k = (p_{x0}, p_{y0}, p_{z0}, E_0)$
-* **Scattered Lepton ($\mu_1$):** $k' = (p_{x1}, p_{y1}, p_{z1}, E_1)$
-
-Using these raw components, the macro evaluates the following fundamental physical quantities:
-
-### 1. Photon Virtuality ($Q^2$)
-Represents the momentum transfer squared. It dictates the spatial resolution of our structural probe—higher values allow us to "see" deeper inside the proton.
-$$Q^2 = -q^2 = 2 \cdot (E_0 E_1 - \vec{p}_0 \cdot \vec{p}_1 - m_\mu^2)$$
-
-### 2. Hadronic Energy Transfer ($\nu$)
-The total energy lost by the lepton in the laboratory frame, which is transferred directly to the target proton system.
-$$\nu = E_0 - E_1$$
-
-### 3. Bjorken Scaling Variable ($x_B$)
-A dimensionless scaling value representing the fraction of the proton's total momentum carried by the specific struck quark.
-$$x_B = \frac{Q^2}{2 M_p \nu}$$
-
-### 4. Inelasticity ($y$)
-The fraction of the incoming lepton's energy transferred to the hadronic system in the target rest frame.
-$$y = \frac{\nu}{E_0}$$
-
-| Constant | Description | Value |
-| :--- | :--- | :--- |
-| $M_p$ | Proton Mass Target | `0.93827 GeV` |
-| $m_\mu$ | Muon Mass | `0.10566 GeV` |
-
----
-
-## Code Workflow & Architecture
-
-1. **Data Pipeline Mapping:** Connects to the binary storage file `myhist_298712.root` and targets the core data table (`ntuple`).
-2. **Memory Binding:** Uses `SetBranchAddress` to map raw storage blocks directly to dynamic local arrays in memory.
-3. **Kinematic Loops:** Iterates event-by-event to calculate isolated 3D dot products, scalar energy balances, and relativistic invariants.
-4. **Data Verification Handshake:** Prints calculated metrics side-by-side with pre-compiled file results (`Q2_file` vs `my_Q2`) to instantly guarantee tracking and reconstruction alignment.
-
----
-
-## Technical Execution Guide
-
-### Prerequisites
-Ensure that **ROOT** is correctly compiled and sourced in your environment.
-
-### Step-by-Step Execution
-1. Navigate directly to your local workspace directory:
-   ```bash
-   cd Desktop/ROOT_Projects
+### Execution
+Run the macro directly within the native ROOT environment using the interactive shell execution syntax:
+```bash
+root -l analysis.C
+```
 
