@@ -140,3 +140,7 @@ xB (calc): -inf | x (file): 0.0440725
 * **Workspace Directory Scoping:** Initial testing triggered file visibility errors (`file myhist_298712.root not found`) due to localized path scoping issues inside the parent shell interpreter. This was resolved by implementing absolute directory matching via `cd Desktop/ROOT_Projects` before running framework operations.
 * **Shell Syntax Prompt Hijacking:** Executing native environment commands (like `.ls`) or pointer member access operators (like `ntuple->Print()`) inside standard `zsh` instead of the active framework runtime caused terminal syntax faults and process hangs. This boundary was standardized by shifting to isolated, self-terminating flags (`root -l -q`) to enforce strict separation between system environments.
 
+---
+
+
+
