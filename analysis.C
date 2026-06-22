@@ -3,7 +3,7 @@
 #include <iostream>
 #include <cmath>
 
-void final_analysis() {
+void analysis() {
     TFile *f = TFile::Open("myhist_298712.root");
     //PhastHist/ntuple
     TTree *tree = (TTree*)f->Get("ntuple");
