@@ -92,6 +92,7 @@ root -l -q example.cpp
 ### Graphical Result
 <img width="798" height="575" alt="histogram" src="https://github.com/user-attachments/assets/2850f1b1-e329-430f-90f4-330fb2a24dc9" />
 
+---
 
 ## Macro 5: analysis.C - Kinematic Reconstruction and Data Pipeline Verification
 
