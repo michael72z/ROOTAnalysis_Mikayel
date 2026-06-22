@@ -179,3 +179,48 @@ Event 9 | Q2: 2.9102 | xB: 0.0256269 | nu: 60.5156
 
 ``` 
 
+---
+
+
+## Macro 7: sxal_analyze_hand.C - Kinematic Validation Anomaly Study
+
+### Description
+This macro serves as a diagnostic control case within the repository analysis pipeline. The script's intended objective is to perform an independent, first-principles cross-check of Deep Inelastic Scattering (DIS) invariants ($Q^2$ and $W^2$) without relying on high-level container classes like `TLorentzVector`. Instead, it uses purely scalar Cartesian momentum tracks and beam properties to reconstruct kinematics manually. 
+
+In this uncorrected configuration (`sxal_analyze_hand.C`), the macro acts as a clear demonstration of leaf-addressing mismatch liabilities, where unmapped memory fields propagate through transcendental equations to generate a silent runtime profile failure.
+
+### Technical Implementation & Physics Foundation
+The macro bypasses relativistic four-vector matrix classes and attempts to reconstruct scattering dynamics using structural coordinate geometry in the laboratory rest frame under the **ultrarelativistic approximation** ($E \gg m_{\mu}$), meaning momentum magnitude is roughly equivalent to total energy ($p \approx E$).
+
+The kinematic sequence is modeled as follows:
+* **Data Pipeline Loading:** Interfaces with `myhist_298712.root` to fetch the core `ntuple` data tree directly from the top-level scope.
+* **Residual Tracker Initialization:** Instantiates two high-resolution 1D histogram objects (`TH1F`) configured with narrow limit ranges centered at zero ($\pm 0.1\text{ GeV}^2$) to trap arithmetic discrepancies:
+  * `hDiffQ2` (Tracks $\Delta Q^2$ distributions)
+  * `hDiffW2` (Tracks $\Delta W^2$ distributions)
+* **Multi-Pad Graphic Canvas Rendering:** Dynamically provisions a segmented graphic canvas (`TCanvas`) divided into a $2 \times 1$ grid layout to display both delta validation plots side-by-side.
+
+### Kinematic Formulas Implemented
+The script performs manual geometric track reconstruction using the following explicit relativistic formulations:
+
+* **Scattered Lepton Total Momentum ($p_{\text{total}}$):** Evaluates the spatial vector norm from individual Cartesian components:
+  $$p_{\text{total}} = \sqrt{(p_{\mu x})^2 + (p_{\mu y})^2 + (p_{\mu z})^2}$$
+
+* **Scattering Angle Projection ($\cos\theta$):** Determines the angular deflection of the outgoing lepton relative to the incoming $z$-axis beam vector layout:
+  $$\cos\theta = \frac{p_{\mu z}}{p_{\text{total}}}$$
+
+* **Ultrarelativistic Photon Virtuality Cross-Check ($Q^2_{\text{calc}}$):** Computes the momentum transfer scale assuming lepton mass is negligible relative to total energy ($E \approx p$):
+  $$Q^2_{\text{calc}} = 2 \cdot E_{\text{beam}} \cdot E' \cdot (1 - \cos\theta)$$
+  *(where $E_{\text{beam}} = \text{P\_beam}$ and $E' = \text{mu0\_E}$)*
+
+* **Hadronic Invariant Mass Cross-Check ($W^2_{\text{calc}}$):** Computes the total energy scale of the final state system relative to the target nucleon mass constant ($M_p = 0.93827\text{ GeV}$):
+  $$W^2_{\text{calc}} = M_p^2 + 2M_p(E_{\text{beam}} - E') - Q^2_{\text{calc}}$$
+
+* **Residual Delta Evaluation ($\Delta$):** Calculates the delta shifts to isolate data tracking errors:
+  $$\Delta Q^2 = Q^2_{\text{calc}} - Q^2_{\text{file}}$$
+  $$\Delta W^2 = W^2_{\text{calc}} - W^2_{\text{file}}$$
+
+### Execution
+Run the diagnostic script within your local environment directory using the standard log-quiet interface invocation:
+```bash
+root -l sxal_analyze_hand.C
+```
