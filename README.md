@@ -143,7 +143,7 @@ xB (calc): -inf | x (file): 0.0440725
 ---
 
 
-## Macro 6: compute.C - Advanced Kinematic Reconstruction via TLorentzVector
+## Macro 6: `compute.C` - Advanced Kinematic Reconstruction via TLorentzVector
 
 ### Description
 This macro advances the kinematic analysis of Deep Inelastic Scattering (DIS) events by migrating from manual coordinate algebra to ROOT's native `TLorentzVector` framework. Processing an experimental dataset of over 128,036 entries within `myhist_298712.root`, the script programmatically reconstructs event-by-event relativistic invariants to map the internal structural dynamics of the proton.
