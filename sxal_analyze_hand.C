@@ -23,11 +23,11 @@ void analyze_hand() {
 
     cout << "Processing events..." << endl;
 
-    // 4. Լուփ բոլոր իրադարձությունների վրայով
+    // 4. loop bolor eventneri vrayov
     for (int i=0; i < ntuple->GetEntries(); i++) {
         ntuple->GetEntry(i);
 
-        // --- ՔՈ ՀԱՇՎԱՐԿՆԵՐԸ (Ըստ գրատախտակի բանաձևերի) ---
+        // --- im hashvarknery (yst grataxtaki banadzevi) ---
         
         // A. Hashvumem lriv impulsn u cos (thetan)
         double p_total = sqrt(mu0_px*mu0_px + mu0_py*mu0_py + mu0_pz*mu0_pz);
