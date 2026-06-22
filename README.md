@@ -143,4 +143,39 @@ xB (calc): -inf | x (file): 0.0440725
 ---
 
 
+## Macro 6: compute.C - Advanced Kinematic Reconstruction via TLorentzVector
+
+### Description
+This macro advances the kinematic analysis of Deep Inelastic Scattering (DIS) events by migrating from manual coordinate algebra to ROOT's native `TLorentzVector` framework. Processing an experimental dataset of over 128,036 entries within `myhist_298712.root`, the script programmatically reconstructs event-by-event relativistic invariants to map the internal structural dynamics of the proton.
+
+### Technical Implementation
+* **Data Pipeline Mapping:** Interfaces with `myhist_298712.root` to map the core experimental data structure directly from the top-level tree scope.
+* **Lepton Four-Vector Parsing:** Extracts spatial momentum and energy components for both the incoming beam projectile and the scattered outgoing lepton to instantiate native `TLorentzVector` tracking objects.
+* **Hadronic Energy Transfer ($\nu$):** Derives the total scalar energy loss of the lepton projectile in the laboratory target rest frame:
+  $$\nu = E_0 - E_1$$
+* **Four-Momentum Transfer Squared ($Q^2$):** Computes photon virtuality factoring in relativistic limits and particle rest mass:
+  $$Q^2 = 2 \cdot (E_0 E_1 - (p_{x0}p_{x1} + p_{y0}p_{y1} + p_{z0}p_{z1}) - m_{\mu}^2)$$
+* **Bjorken Scaling Variable ($x_B$):** Evaluates the fractional longitudinal momentum carried by the struck constituent quark within the nucleon:
+  $$x_B = \frac{Q^2}{2 M_p \nu}$$
+* **Inelasticity Metric ($y$):** Determines the relative fraction of total beam energy transferred to the hadronic system during the lepton-nucleon interaction:
+  $$y = \frac{\nu}{E_0}$$
+
+### Execution
+Run the macro directly within the native environment using the non-interactive shell execution syntax:
+```bash
+root -l -q compute.C
+
+Processing compute.C...
+Event 0 | Q2: 11.8589 | xB: 0.254237 | nu: 24.857
+Event 1 | Q2: 1.12726 | xB: 0.00709782 | nu: 84.6333
+Event 2 | Q2: 3.70085 | xB: 0.0440725 | nu: 44.7481
+Event 3 | Q2: 3.70085 | xB: 0.0440725 | nu: 44.7481
+Event 4 | Q2: 3.70085 | xB: 0.0440725 | nu: 44.7481
+Event 5 | Q2: 3.70085 | xB: 0.0440725 | nu: 44.7481
+Event 6 | Q2: 3.70085 | xB: 0.0440725 | nu: 44.7481
+Event 7 | Q2: 2.06599 | xB: 0.024819 | nu: 44.3595
+Event 8 | Q2: 2.9102 | xB: 0.0256269 | nu: 60.5156
+Event 9 | Q2: 2.9102 | xB: 0.0256269 | nu: 60.5156
+
+``` 
 
