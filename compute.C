@@ -10,12 +10,21 @@ void compute() {
     if (!f) return;
 
     // 2. bacumenq treen (PhastHist papki mech)
-    TTree *tree = (TTree*)f->Get("PhastHist/ntuple");
+    TTree *tree = (TTree*)f->Get("ntuple");
+    if (!tree) return;
 
     // 3. haytararumenq zangvacner (4 chapani: px, py, pz, E)
-    float mu0_p[4], mu1_p[4];
-    tree->SetBranchAddress("mu0_p", mu0_p);
-    tree->SetBranchAddress("mu1_p", mu1_p);
+    double mu0_px, mu0_py, mu0_pz, mu0_E;
+    double mu1_px, mu1_py, mu1_pz, mu1_E;
+
+    tree->SetBranchAddress("mu0_px", &mu0_px);
+    tree->SetBranchAddress("mu0_py", &mu0_py);
+    tree->SetBranchAddress("mu0_pz", &mu0_pz);
+    tree->SetBranchAddress("mu0_E", &mu0_E);
+    tree->SetBranchAddress("mu1_px", &mu1_px);
+    tree->SetBranchAddress("mu1_py", &mu1_py);
+    tree->SetBranchAddress("mu1_pz", &mu1_pz);
+    tree->SetBranchAddress("mu1_E", &mu1_E);
 
     const double M_p = 0.938272; // proroni zangvac (GeV)
 
@@ -24,8 +33,8 @@ void compute() {
         tree->GetEntry(i);
 
         // ogtagorcumenq harmar vektor ROOT 
-        TLorentzVector k(mu0_p[0], mu0_p[1], mu0_p[2], mu0_p[3]);   // muqg gorcox myuon
-        TLorentzVector kp(mu1_p[0], mu1_p[1], mu1_p[2], mu1_p[3]); // crvac myuon  myuon
+        TLorentzVector k(mu0_px, mu0_py, mu0_pz, mu0_E);   // muqg gorcox myuon
+        TLorentzVector kp(mu1_px, mu1_py, mu1_pz, mu1_E); // crvac myuon  myuon
         TLorentzVector q = k - kp;                                 // poxancac impuls
 
         // HASHVARK:
