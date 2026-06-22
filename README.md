@@ -94,7 +94,7 @@ root -l -q example.cpp
 
 ---
 
-## Macro 5: analysis.C - Kinematic Reconstruction and Data Pipeline Verification
+## Macro 5: `analysis.C` - Kinematic Reconstruction and Data Pipeline Verification
 
 ### Description
 This macro executes a deterministic kinematic reconstruction of Deep Inelastic Scattering (DIS) events utilizing relativistic invariant equations. By streaming incoming and scattered lepton tracks from an experimental `TTree` dataset, the script programmatically evaluates core kinematic variables event-by-event. The script is structurally designed to print manual mathematical derivations side-by-side with pre-computed file branches to perform an automated data-integrity and tracking validation handshake.
