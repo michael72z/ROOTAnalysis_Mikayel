@@ -116,4 +116,13 @@ Run the macro directly within the native ROOT environment using the interactive 
 ```bash
 root -l analysis.C
 ```
+### Encountered Obstacles & Technical Resolutions
+Metadata Branch Mismatch (The Code Logic works perfectly): The script's mathematical engine evaluated flawlessly, but runtime logs registered an unknown branch -> mu0_p metadata error. Because the archival file utilized alternative naming strings, tracking arrays defaulted to unallocated initializations of zero (0.0). This data absence propagated through the equations, collapsing the virtuality down to its minimum rest-mass boundary (Q 
+2
+ =−0.02205) and triggering an asymptotic zero-division error (x 
+B
+​	
+ =−inf). This script is intentionally preserved in its original setup to document early-stage pipeline debugging; data-stream schema matching was fully mapped and permanently resolved in later iterations.
+Workspace Directory Scoping: Initial testing triggered file visibility errors (file myhist_298712.root not found) due to localized path scoping issues inside the parent shell interpreter. This was resolved by implementing absolute directory matching via cd Desktop/ROOT_Projects before running framework operations.
+Shell Syntax Prompt Hijacking: Executing native environment commands (like .ls) or pointer member access operators (like ntuple->Print()) inside standard zsh instead of the active framework runtime environment caused terminal syntax faults and process hangs. This boundary was standardized by shifting to isolated, self-terminating flags (root -l -q) to enforce strict separation between system environments.
 
