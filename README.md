@@ -254,4 +254,64 @@ The reason this file generates empty plots despite processing all 128,036 entrie
 
 ---
 
+## Macro 8: `fanalysis.C` – Textual Kinematic Cross-Verification Pipeline
+
+### Description
+This macro serves as a text-based, terminal-driven telemetry verification gate within the analysis stream. Bypassing graphical canvas generation, `fanalysis.C` runs a targeted, high-precision manual audit of Deep Inelastic Scattering (DIS) invariants. It extracts raw Cartesian leaf data for both the initial-state and final-state leptons to compute kinematics ($Q^2$, $x_B$, $y_B$) from raw scalar components, printing a side-by-side performance check against the pre-calculated reference values stored in the raw file.
+
+
+### Technical Implementation & Physics Foundation
+This macro establishes explicit leaf-address allocations to map the complete Lorentz kinematics of the tracking system. Unlike ultrarelativistic approximations that completely neglect lepton rest mass, this script maintains full mass-inclusive tracking by integrating an exact muon rest mass square deduction constant ($m_{\mu}^2 = 0.105^2\text{ GeV}^2$).
+
+The execution sequence operates as follows:
+* **Explicit Branch Registration:** Hooks explicitly into the complete coordinate sets for the incoming lepton system (`mu0_px`, `mu0_py`, `mu0_pz`, `mu0_E`) and the scattered system (`mu1_px`, `mu1_py`, `mu1_pz`, `mu1_E`).
+* **Controlled Event Gating:** Evaluates a strict window subset of the first 100 entries to optimize processing overhead, applying a hard conditional limit to dump raw text comparisons for the first 5 sequential events.
+
+
+### Kinematic Formulas Implemented
+The mathematical framework executes manual reconstruction using mass-retained four-vector dot products:
+
+* **Energy Transfer ($\nu$):** Measures the scalar energy difference carried away by the virtual exchange boson:
+  $$\nu = E_0 - E_1$$
+
+* **Spatial Momentum Vector Dot Product ($\vec{p}_0 \cdot \vec{p}_1$):** Evaluates the spatial orientation overlap of the lepton tracks:
+  $$\vec{p}_0 \cdot \vec{p}_1 = p_{x0}p_{x1} + p_{y0}p_{y1} + p_{z0}p_{z1}$$
+
+* **Mass-Corrected Exchange Photon Virtuality ($Q^2_{\text{calc}}$):** Calculates momentum transfer squared while explicitly subtracting the lepton mass invariant scale:
+  $$Q^2_{\text{calc}} = 2(E_0 E_1 - \vec{p}_0 \cdot \vec{p}_1 - m_{\mu}^2)$$
+
+* **Bjorken Scaling Variable ($x_B$):** Computes the fractional momentum fraction carried by the struck parton relative to the nucleon target mass constant ($M_p = 0.93827\text{ GeV}$):
+  $$x_B = \frac{Q^2_{\text{calc}}}{2 M_p \nu}$$
+
+* **Lepton Inelasticity ($y_B$):** Measures the fractional energy loss of the incident lepton in the target rest frame:
+  $$y_B = \frac{\nu}{E_0}$$
+
+
+### Execution
+Invoke the text-telemetry macro within the terminal environment directly through the log-quiet command interface:
+```bash
+root -l fanalysis.C
+
+root [0] 
+Processing fanalysis.C...
+--- Event 0 ---
+Q2 (calc): 11.8592 | Q2 (file): 11.8589
+xB (calc): 0.254243 | x (file): 0.254237
+--- Event 1 ---
+Q2 (calc): 1.12754 | Q2 (file): 1.12726
+xB (calc): 0.00709958 | x (file): 0.00709782
+--- Event 2 ---
+Q2 (calc): 3.70113 | Q2 (file): 3.70085
+xB (calc): 0.0440759 | x (file): 0.0440725
+--- Event 3 ---
+Q2 (calc): 3.70113 | Q2 (file): 3.70085
+xB (calc): 0.0440759 | x (file): 0.0440725
+--- Event 4 ---
+Q2 (calc): 3.70113 | Q2 (file): 3.70085
+xB (calc): 0.0440759 | x (file): 0.0440725
+root [1]
+```
+
+---
+
 
