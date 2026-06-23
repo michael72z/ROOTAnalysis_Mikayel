@@ -261,30 +261,55 @@ This macro serves as a text-based, terminal-driven telemetry verification gate w
 
 
 ### Technical Implementation & Physics Foundation
-This macro establishes explicit leaf-address allocations to map the complete Lorentz kinematics of the tracking system. Unlike ultrarelativistic approximations that completely neglect lepton rest mass, this script maintains full mass-inclusive tracking by integrating an exact muon rest mass square deduction constant ($m_{\mu}^2 = 0.105^2\text{ GeV}^2$).
+This macro establishes explicit leaf-address allocations to map the complete Lorentz kinematics of the tracking system. Unlike ultrarelativistic approximations that completely neglect lepton rest mass, this script maintains full mass-inclusive tracking by integrating an exact muon rest mass square deduction constant:
+
+$$
+m_{\mu}^2 = 0.105^2 \text{ GeV}^2
+$$
 
 The execution sequence operates as follows:
 * **Explicit Branch Registration:** Hooks explicitly into the complete coordinate sets for the incoming lepton system (`mu0_px`, `mu0_py`, `mu0_pz`, `mu0_E`) and the scattered system (`mu1_px`, `mu1_py`, `mu1_pz`, `mu1_E`).
 * **Controlled Event Gating:** Evaluates a strict window subset of the first 100 entries to optimize processing overhead, applying a hard conditional limit to dump raw text comparisons for the first 5 sequential events.
 
+---
 
 ### Kinematic Formulas Implemented
 The mathematical framework executes manual reconstruction using mass-retained four-vector dot products:
 
-* **Energy Transfer ($\nu$):** Measures the scalar energy difference carried away by the virtual exchange boson:
-  $$\nu = E_0 - E_1$$
+#### 1. Energy Transfer ($\nu$)
+Measures the scalar energy difference carried away by the virtual exchange boson:
 
-* **Spatial Momentum Vector Dot Product ($\vec{p}_0 \cdot \vec{p}_1$):** Evaluates the spatial orientation overlap of the lepton tracks:
-  $$\vec{p}_0 \cdot \vec{p}_1 = p_{x0}p_{x1} + p_{y0}p_{y1} + p_{z0}p_{z1}$$
+$$
+\nu = E_0 - E_1
+$$
 
-* **Mass-Corrected Exchange Photon Virtuality ($Q^2_{\text{calc}}$):** Calculates momentum transfer squared while explicitly subtracting the lepton mass invariant scale:
-  $$Q^2_{\text{calc}} = 2(E_0 E_1 - \vec{p}_0 \cdot \vec{p}_1 - m_{\mu}^2)$$
+#### 2. Spatial Momentum Vector Dot Product
+Evaluates the spatial orientation overlap of the lepton tracks:
 
-* **Bjorken Scaling Variable ($x_B$):** Computes the fractional momentum fraction carried by the struck parton relative to the nucleon target mass constant ($M_p = 0.93827\text{ GeV}$):
-  $$x_B = \frac{Q^2_{\text{calc}}}{2 M_p \nu}$$
+$$
+\vec{p}_0 \cdot \vec{p}_1 = p_{x0}p_{x1} + p_{y0}p_{y1} + p_{z0}p_{z1}
+$$
 
-* **Lepton Inelasticity ($y_B$):** Measures the fractional energy loss of the incident lepton in the target rest frame:
-  $$y_B = \frac{\nu}{E_0}$$
+#### 3. Mass-Corrected Exchange Photon Virtuality ($Q^2_{\text{calc}}$)
+Calculates momentum transfer squared while explicitly subtracting the lepton mass invariant scale:
+
+$$
+Q^2_{\text{calc}} = 2(E_0 E_1 - \vec{p}_0 \cdot \vec{p}_1 - m_{\mu}^2)
+$$
+
+#### 4. Bjorken Scaling Variable ($x_B$)
+Computes the fractional momentum fraction carried by the struck parton relative to the nucleon target mass constant ($M_p = 0.93827 \text{ GeV}$):
+
+$$
+x_B = \frac{Q^2_{\text{calc}}}{2 M_p \nu}
+$$
+
+#### 5. Lepton Inelasticity ($y_B$)
+Measures the fractional energy loss of the incident lepton in the target rest frame:
+
+$$
+y_B = \frac{\nu}{E_0}
+$$
 
 
 ### Execution
