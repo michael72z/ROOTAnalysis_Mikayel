@@ -1,4 +1,4 @@
-void analyze_hand() {
+void sxal_analyze_hand() {
     // 1. i opened the root file 
     TFile *f = TFile::Open("myhist_298712.root");
     if (!f) { cout << "File not found!" << endl; return; }
