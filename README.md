@@ -271,7 +271,6 @@ The execution sequence operates as follows:
 * **Explicit Branch Registration:** Hooks explicitly into the complete coordinate sets for the incoming lepton system (`mu0_px`, `mu0_py`, `mu0_pz`, `mu0_E`) and the scattered system (`mu1_px`, `mu1_py`, `mu1_pz`, `mu1_E`).
 * **Controlled Event Gating:** Evaluates a strict window subset of the first 100 entries to optimize processing overhead, applying a hard conditional limit to dump raw text comparisons for the first 5 sequential events.
 
----
 
 ### Kinematic Formulas Implemented
 The mathematical framework executes manual reconstruction using mass-retained four-vector dot products:
