@@ -425,5 +425,105 @@ root [1]
 
 ---
 
+## Macro 10: `analyze_hand3.C` – 3D Vector Dot Product Angular Reconstruction
 
+### Description
+This macro implements an advanced, coordinate-independent kinematic verification gate by evaluating the true spatial opening angle ($\theta$) between the incident and scattered lepton tracks. Moving away from the idealized assumption that the incoming beam is perfectly collinear with the z-axis, `analyze_hand3.C` calculates the scalar dot product of both 3D momentum vectors. It fills comparative 1D histograms and projects them onto a dual-pad canvas to validate $Q^2$ and $W^2$ calculations against pre-computed tree parameters.
+
+
+### Technical Implementation & Physics Foundation
+While Macro 9 relied strictly on the longitudinal momentum component ($p_{z1}$) to infer the scattering angle, Macro 10 accounts for the full 3D trajectory profiles of both the initial-state and final-state leptons. This approach provides a diagnostic test for any transverse momentum components ($p_x, p_y$) present in the incident beam configuration.
+
+The execution sequence operates as follows:
+* **Dynamic Canvas Optimization:** Allocates a custom `TCanvas` partitioned into a 2x1 window layout, drawing overlay plots with a heavy line weight (`SetLineWidth(2)`) to ensure high visual clarity.
+* **Array Map Linking:** Hooks into the full spatial components for both state steps (`mu0_E, mu0_px, mu0_py, mu0_pz` and `mu1_E, mu1_px, mu1_py, mu1_pz`).
+* **Visual Telemetry Feedback:** Loops through the complete dataset tree, updating tracking distributions and printing out a detailed side-by-side verification table for the first 20 sequential events.
+
+
+### Kinematic Formulas Implemented
+The mathematical framework reconstructs the invariant metrics by evaluating the precise spatial orientation overlap between the two lepton vectors:
+
+#### 1. Initial and Scattered Momentum Vector Magnitudes
+Computes the absolute 3D momentum scales from raw Cartesian coordinates:
+
+$$
+|\vec{p}_0| = \sqrt{(p_{x0})^2 + (p_{y0})^2 + (p_{z0})^2}
+$$
+
+$$
+|\vec{p}_1| = \sqrt{(p_{x1})^2 + (p_{y1})^2 + (p_{z1})^2}
+$$
+
+#### 2. Vector Dot Product
+Calculates the spatial inner product of the two particle trajectories:
+
+$$
+\vec{p}_0 \cdot \vec{p}_1 = p_{x0}p_{x1} + p_{y0}p_{y1} + p_{z0}p_{z1}
+$$
+
+#### 3. Exact Coordinate Scattering Angle Cosine
+Extracts the true geometric opening angle from the tracking system components:
+
+$$
+\cos\theta = \frac{\vec{p}_0 \cdot \vec{p}_1}{|\vec{p}_0| \cdot |\vec{p}_1|}
+$$
+
+#### 4. Angular Virtuality Verification ($Q^2_{\text{calculated}}$)
+Reconstructs momentum transfer using the derived angular cosine scalar:
+
+$$
+Q^2_{\text{calculated}} = 2 E_0 E_1 (1 - \cos\theta)
+$$
+
+#### 5. Hadronic Invariant Mass Squared ($W^2_{\text{calculated}}$)
+Determines the final-state system mass parameter relative to the stable proton scale ($M_p = 0.938272 \text{ GeV}$):
+
+$$
+W^2_{\text{calculated}} = M_p^2 + 2 M_p (E_0 - E_1) - Q^2_{\text{calculated}}
+$$
+
+
+### Execution
+Run the dot-product validation macro inside the ROOT environment:
+
+```bash
+root -l analyze_hand3.C
+
+root [0] 
+Processing analyze_hand3.C...
+
+--- HAND 3: DOT PRODUCT METHOD (Terminal Results) ---
+Event   | Q2_File    | Q2_Mine    | W2_File    | W2_Mine   
+----------------------------------------------------------------------
+0       | 11.8589    | 11.8586    | 35.6666    | 35.6669   
+1       | 1.1273     | 1.1197     | 158.5713   | 158.5789  
+2       | 3.7009     | 3.6995     | 81.1514    | 81.1527   
+3       | 3.7009     | 3.6995     | 81.1514    | 81.1527   
+4       | 3.7009     | 3.6995     | 81.1514    | 81.1527   
+5       | 3.7009     | 3.6995     | 81.1514    | 81.1527   
+6       | 3.7009     | 3.6995     | 81.1514    | 81.1527   
+7       | 2.0660     | 2.0647     | 82.0569    | 82.0581   
+8       | 2.9102     | 2.9075     | 111.5304   | 111.5330  
+9       | 2.9102     | 2.9075     | 111.5304   | 111.5330  
+10      | 2.7636     | 2.7625     | 75.8814    | 75.8824   
+11      | 2.7636     | 2.7625     | 75.8814    | 75.8824   
+12      | 2.7636     | 2.7625     | 75.8814    | 75.8824   
+13      | 2.0937     | 2.0513     | 246.0083   | 246.0506  
+14      | 2.0937     | 2.0513     | 246.0083   | 246.0506  
+15      | 2.3215     | 2.3209     | 58.9550    | 58.9555   
+16      | 2.3215     | 2.3209     | 58.9550    | 58.9555   
+17      | 1.2776     | 1.2676     | 181.5358   | 181.5457  
+18      | 1.2776     | 1.2676     | 181.5358   | 181.5457  
+19      | 1.2776     | 1.2676     | 181.5358   | 181.5457  
+----------------------------------------------------------------------
+overall done  128036event։
+Grafs are ready, black is file's one and colored one is mine
+root [1]
+```
+
+### Graphical Result
+
+<img width="1438" height="654" alt="hand3_comparison" src="https://github.com/user-attachments/assets/7bf01c22-5b34-4194-8325-244e1fb74cbc" />
+
+---
 
