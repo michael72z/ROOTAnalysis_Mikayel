@@ -338,4 +338,92 @@ root [1]
 
 ---
 
+## Macro 9: `analyze_hand2.C` – Invariant Reconstruction via Ultrarelativistic Angular Approximation
+
+### Description
+This macro implements a geometry-driven validation gateway that evaluates Deep Inelastic Scattering (DIS) kinematics using the scattered lepton's polar angle ($\theta$). Bypassing full Cartesian four-vector dot products, `analyze_hand2.C` employs the ultrarelativistic collinear beam approximation to extract $Q^2$ and $W^2$ metrics. It populates dual comparative 1D histograms, rendering real-time validation plots that overlay hand-calculated geometric values directly against the pre-computed tree references.
+
+
+### Technical Implementation & Physics Foundation
+This diagnostic macro isolates specific scalar variables (`mu0_E`, `mu1_E`, and the three momentum components of the scattered track) to test the stability of the angular tracking subsystem. By assuming an ideal incident beam perfectly aligned along the z-axis, it evaluates the impact of ignoring finite lepton rest masses ($m_{\mu} \approx 0$).
+
+The execution sequence operates as follows:
+* **Histogram Allocation & Styling:** Instantiates paired `TH1F` tracking distributions for virtuality ($Q^2$) and hadronic invariant mass squared ($W^2$). The custom calculated fields are assigned distinct dashed line formatting (`SetLineStyle(2)`) in vibrant blue and red to provide immediate visual contrast against the solid black reference lines.
+* **Dual-Pad Canvas Partition:** Dynamically provisions a single `TCanvas` split into a 2x1 viewport arrangement, projecting the automated side-by-side verification profiles with complete descriptive legends (`TLegend`).
+* **Telemetry Data Table:** Executes a loop across the entire dataset tree, piping out a dedicated alphanumeric comparison grid to the standard terminal output stream for the first 20 operational entries.
+
+
+### Kinematic Formulas Implemented
+The mathematical engine handles physics reconstruction by deriving the scattering angle from the momentum components of the final-state lepton:
+
+#### 1. Total Momentum Magnitude of the Scattered Lepton
+Computes the spatial vector magnitude from raw Cartesian sub-components:
+
+$$
+|\vec{p}_1| = \sqrt{(p_{x1})^2 + (p_{y1})^2 + (p_{z1})^2}
+$$
+
+#### 2. Polar Scattering Angle Cosine
+Determines the angular deflection projection relative to the idealized forward beam axis:
+
+$$
+\cos\theta = \frac{p_{z1}}{|\vec{p}_1|}
+$$
+
+#### 3. Ultrarelativistic Virtuality Approximation ($Q^2_{\text{mine}}$)
+Reconstructs momentum transfer under the zero-mass high-energy limit approximation:
+
+$$
+Q^2_{\text{mine}} = 2 E_0 E_1 (1 - \cos\theta)
+$$
+
+#### 4. Hadronic Invariant Mass Squared ($W^2_{\text{mine}}$)
+Derives the total energy scale of the final state hadronic system using the proton mass constant ($M_p = 0.938272 \text{ GeV}$):
+
+$$
+W^2_{\text{mine}} = M_p^2 + 2 M_p (E_0 - E_1) - Q^2_{\text{mine}}
+$$
+
+
+### Execution
+Execute the angular validation macro within your interactive environment:
+
+```bash
+root -l analyze_hand2.C
+
+root [0] 
+Processing analyze_hand2.C...
+
+--- HAND 2: SIMPLE Pz METHOD (Terminal Results) ---
+Event   | Q2_File    | Q2_Mine    | W2_File    | W2_Mine   
+----------------------------------------------------------------------
+0       | 11.8589    | 11.6628    | 35.6666    | 35.8628   
+1       | 1.1273     | 0.7939     | 158.5713   | 158.9046  
+2       | 3.7009     | 2.9328     | 81.1514    | 81.9195   
+3       | 3.7009     | 2.9328     | 81.1514    | 81.9195   
+4       | 3.7009     | 2.9328     | 81.1514    | 81.9195   
+5       | 3.7009     | 2.9328     | 81.1514    | 81.9195   
+6       | 3.7009     | 2.9328     | 81.1514    | 81.9195   
+7       | 2.0660     | 1.5041     | 82.0569    | 82.6187   
+8       | 2.9102     | 3.0029     | 111.5304   | 111.4376  
+9       | 2.9102     | 3.0029     | 111.5304   | 111.4376  
+10      | 2.7636     | 2.9956     | 75.8814    | 75.6493   
+11      | 2.7636     | 2.9956     | 75.8814    | 75.6493   
+12      | 2.7636     | 2.9956     | 75.8814    | 75.6493   
+13      | 2.0937     | 1.8099     | 246.0083   | 246.2921  
+14      | 2.0937     | 1.8099     | 246.0083   | 246.2921  
+15      | 2.3215     | 2.2487     | 58.9550    | 59.0278   
+16      | 2.3215     | 2.2487     | 58.9550    | 59.0278   
+17      | 1.2776     | 1.3892     | 181.5358   | 181.4242  
+18      | 1.2776     | 1.3892     | 181.5358   | 181.4242  
+19      | 1.2776     | 1.3892     | 181.5358   | 181.4242  
+root [1]
+
+```
+### Graphical Result
+<img width="1408" height="650" alt="hand2_comparison" src="https://github.com/user-attachments/assets/29c1bc98-2daa-4b19-a57a-6432276603e8" />
+
+---
+
+
 
