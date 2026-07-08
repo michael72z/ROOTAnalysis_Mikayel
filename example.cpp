@@ -11,6 +11,9 @@ int main() {
         h->Fill(gRandom->Gaus());
     }
 
+    std::cout<<h->GetRMS() <<std::endl; 
+        
+    
     // Draw the histogram
     TCanvas *c = new TCanvas("c", "Canvas", 800, 600);
     h->Draw();
