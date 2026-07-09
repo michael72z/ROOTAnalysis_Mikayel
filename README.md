@@ -532,11 +532,29 @@ root [1]
 ### Description
 This macro performs a systematic resolution and error analysis of the four-momentum transfer squared ($Q^2$) by comparing data values stored in a ROOT `TTree` against reconstructed values derived from final-state muon kinematics. To handle the experimental drop-off of the cross-section gracefully, the macro implements a quantile-based sorting algorithm to segment the dataset into 6 dynamic kinematic intervals ($bins$) containing equal statistics (~20,000 events each). This approach yields distinct, clean Gaussian error profiles across all tracked energy regimes.
 
+### Mathematical Derivation
+The exact Lorentz-invariant expression for the negative four-momentum transfer squared ($Q^2 = -q^2$) in lepton scattering is defined using four-vectors as:
+$$Q^2 = -(p_1 - p_2)^2 = -(p_1^2 + p_2^2 - 2p_1 \cdot p_2)$$
+
+Where $p_1 = (E_1, \mathbf{p}_1)$ and $p_2 = (E_2, \mathbf{p}_2)$ are the four-momenta of the initial and final muons respectively. Given that $p_1^2 = p_2^2 = m_\mu^2$ (where $m_\mu$ is the muon rest mass), the scalar product expands to:
+$$p_1 \cdot p_2 = E_1E_2 - |\mathbf{p}_1||\mathbf{p}_2|\cos\theta$$
+
+#### 1. Exact Formula (With Particle Mass)
+If we **do not** ignore the muon rest mass, the exact formula tracking the full kinematics is:
+$$Q^2 = 2\left(E_1E_2 - |\mathbf{p}_1||\mathbf{p}_2|\cos\theta\right) - 2m_\mu^2$$
+
+Substituting $|\mathbf{p}| = \sqrt{E^2 - m_\mu^2}$, the complete expression becomes:
+$$Q^2 = 2E_1E_2 - 2\sqrt{E_1^2 - m_\mu^2}\sqrt{E_2^2 - m_\mu^2}\cos\theta - 2m_\mu^2$$
+
+#### 2. Relativistic Approximation (Ignoring Mass)
+In the extreme relativistic limit where the scale of the exchange energy is much larger than the rest mass ($E_1, E_2 \gg m_\mu$), we can safely **ignore the mass** terms ($m_\mu \to 0$). Under this condition, the magnitudes of the three-momenta approach the total energies ($|\mathbf{p}_1| \approx E_1$ and $|\mathbf{p}_2| \approx E_2$), simplifies the expression to the standard form implemented in this macro:
+$$Q^2 \approx 2E_1E_2 - 2E_1E_2\cos\theta = 2E_1E_2(1 - \cos\theta)$$
+
+---
+
 ### Technical Implementation
 * **Dynamic Statistical Binning:** Extracts and sorts the entire $Q^2$ array via `std::sort` to determine custom bin boundaries, ensuring event counts are evenly balanced across all 6 kinematic intervals.
-* **Kinematic Reconstruction:** Reconstructs the invariant four-momentum transfer using the ultrarelativistic formula:
-  $$Q^2 = 2E_1E_2(1 - \cos\theta)$$
-  where $\theta$ represents the scattering opening angle computed programmatically via the vector dot product of the muon three-momenta.
+* **Kinematic Reconstruction:** Reconstructs $Q^2$ programmatically for every single event using the ultrarelativistic formula based on the vector dot product of the muon three-momenta to extract $\cos\theta$.
 * **Dual-Error Tracking:** For every event, the macro maps the coordinates and populates two parallel 1D histogram channels based on the localized $Q^2$ domain:
   * **Absolute Error:** $\Delta Q^2 = |Q^2_{\text{file}} - Q^2_{\text{mine}}|$
   * **Relative Error:** $\delta Q^2 = \frac{|Q^2_{\text{file}} - Q^2_{\text{mine}}|}{Q^2_{\text{file}}}$
@@ -545,5 +563,6 @@ This macro performs a systematic resolution and error analysis of the four-momen
 ### Graphical Result
 Below is the generated multi-panel canvas rendering the absolute and relative error distributions filled across the dynamically determined boundaries.
 
-<img width="1438" height="737" alt="q2errorf" src="https://github.com/user-attachments/assets/b43f8628-bec8-4bf0-8e98-ebeba6d57eee" />
+<img width="1438" height="737" alt="q2errorf" src="https://github.com/user-attachments/assets/61312f4b-d94b-4d28-9e6b-fd26a96abe3b" />
 
+---
