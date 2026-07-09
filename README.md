@@ -527,3 +527,23 @@ root [1]
 
 ---
 
+## Macro 11: `AnalyzeQ2Errors.cpp` - Kinematic $Q^2$ Error Analysis and Equal-Statistics Binning
+
+### Description
+This macro performs a systematic resolution and error analysis of the four-momentum transfer squared ($Q^2$) by comparing data values stored in a ROOT `TTree` against reconstructed values derived from final-state muon kinematics. To handle the experimental drop-off of the cross-section gracefully, the macro implements a quantile-based sorting algorithm to segment the dataset into 6 dynamic kinematic intervals ($bins$) containing equal statistics (~20,000 events each). This approach yields distinct, clean Gaussian error profiles across all tracked energy regimes.
+
+### Technical Implementation
+* **Dynamic Statistical Binning:** Extracts and sorts the entire $Q^2$ array via `std::sort` to determine custom bin boundaries, ensuring event counts are evenly balanced across all 6 kinematic intervals.
+* **Kinematic Reconstruction:** Reconstructs the invariant four-momentum transfer using the ultrarelativistic formula:
+  $$Q^2 = 2E_1E_2(1 - \cos\theta)$$
+  where $\theta$ represents the scattering opening angle computed programmatically via the vector dot product of the muon three-momenta.
+* **Dual-Error Tracking:** For every event, the macro maps the coordinates and populates two parallel 1D histogram channels based on the localized $Q^2$ domain:
+  * **Absolute Error:** $\Delta Q^2 = |Q^2_{\text{file}} - Q^2_{\text{mine}}|$
+  * **Relative Error:** $\delta Q^2 = \frac{|Q^2_{\text{file}} - Q^2_{\text{mine}}|}{Q^2_{\text{file}}}$
+* **Canvas Multiplexing:** Utilizes `TCanvas::Divide(6, 2)` to render all 12 resulting distributions simultaneously (6 absolute error profiles in the top row, 6 relative error profiles in the bottom row) for rapid comparative analysis.
+
+### Graphical Result
+Below is the generated multi-panel canvas rendering the absolute and relative error distributions filled across the dynamically determined boundaries.
+
+<img width="1438" height="737" alt="q2errorf" src="https://github.com/user-attachments/assets/b43f8628-bec8-4bf0-8e98-ebeba6d57eee" />
+
